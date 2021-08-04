@@ -8,6 +8,9 @@ def hello():
 @application.route("/endpoint", methods=['POST'])
 def endpoint():
     current_app.logger.warn(request.headers) 
+    if request.is_json:
+        json_data = request.get_json()
+        current_app.logger.warn(json_data)
     return "XHello World!X"
 
 if __name__ == "__main__":
