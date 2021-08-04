@@ -7,7 +7,7 @@ def hello():
 
 @application.route("/endpoint")
 def endpoint():
-    current_app.logger.warn("foo") 
+    current_app.logger.warn(request.headers) 
     return "XHello World!X"
 
 if __name__ == "__main__":
