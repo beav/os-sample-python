@@ -5,7 +5,7 @@ application = Flask(__name__)
 def hello():
     return "XHello World!X"
 
-@application.route("/endpoint")
+@application.route("/endpoint", methods=['POST'])
 def endpoint():
     current_app.logger.warn(request.headers) 
     return "XHello World!X"
