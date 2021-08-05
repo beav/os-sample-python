@@ -7,6 +7,8 @@ from string import Template
 
 from flask import Flask, request, current_app, abort
 from kafka import KafkaProducer
+import datetime
+import uuid
 
 application = Flask(__name__)
 
@@ -28,6 +30,19 @@ producer = KafkaProducer(
 )
 
 
+def generate_cloudevent(data):
+    cloudevent = {
+        "id": str(uuid.uuid4()),
+        "source": "https://console.redhat.com",
+        "specversion": "1.0",
+        "type": "com.redhat.insights.system",
+        "time": datetime.datetime.utcnow().isoformat(),
+        "datacontenttype": "application/json",
+        "data": json.dumps(data),
+    }
+    return cloudevent
+
+
 def get_short_token(long_token):
     payload = {
         "grant_type": "refresh_token",
@@ -46,12 +61,13 @@ def get_cves_for_system(st, inventory_id):
         CVES_FOR_SYSTEM.substitute(inventory_id=inventory_id), headers=headers
     )
     response.raise_for_status()
-    return response.json().get("data")
+    data = response.json().get("data")
+    data["inventory_id"] = inventory_id
+    return data
 
 
-def publish_data(data):
-    binary_data = json.dumps(data).encode()
-    producer.send("myevents", binary_data)
+def publish_data(cloudevent):
+    producer.send("myevents", cloudevent.encode())
 
 
 @application.route("/")
@@ -77,9 +93,9 @@ def endpoint():
     inv_id = json_data.get("context").get("inventory_id")
 
     short_token = get_short_token(os.getenv("LONG_TOKEN"))
-    cves = get_cves_for_system(short_token, inv_id)
+    cve_notification = get_cves_for_system(short_token, inv_id)
 
-    publish_data(cves)
+    publish_data(generate_cloudevent(cve_notification))
 
     return "XHello World!X"
 
