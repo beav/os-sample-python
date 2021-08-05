@@ -7,7 +7,7 @@ name = "pypi"
 gunicorn = "*"
 Flask = "*"
 requests = "*"
-kafka = "*"
+kafka-python = "*"
 
 [dev-packages]
 
