@@ -10,9 +10,9 @@ CVES_FOR_SYSTEM= Template('https://cloud.redhat.com/api/vulnerability/v1/systems
 
 def get_short_token(long_token):
     payload = {'grant_type': 'refresh_token', 'client_id':'rhsm-api', 'refresh_token': long_token}
-    response = requests.get(TOKEN_URL, data=payload)
+    response = requests.post(TOKEN_URL, data=payload)
     response.raise_for_status()
-    short_token = r.json().get('access_token')
+    short_token = response.json().get('access_token')
     return short_token
 
 def get_cves_for_system(st, inventory_id):
