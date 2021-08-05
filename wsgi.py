@@ -3,6 +3,7 @@ import os
 from flask import Flask, request, current_app, abort
 application = Flask(__name__)
 
+
 @application.route("/")
 def hello():
     return "XHello World!X"
@@ -17,7 +18,7 @@ def endpoint():
         abort(403)
     if request.is_json:
         json_data = request.get_json()
-        current_app.logger.warn(json_data)
+        current_app.logger.warn(json_data['context']['inventory_id'])
     return "XHello World!X"
 
 if __name__ == "__main__":
