@@ -61,8 +61,8 @@ def get_cves_for_system(st, inventory_id):
         CVES_FOR_SYSTEM.substitute(inventory_id=inventory_id), headers=headers
     )
     response.raise_for_status()
-    data = response.json().get("data")
-    data["inventory_id"] = inventory_id
+    cve_data = response.json().get("data")
+    data = {"inventory_id": inventory_id, "cves": cve_data}
     return data
 
 
