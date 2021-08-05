@@ -9,8 +9,11 @@ def hello():
 
 @application.route("/endpoint", methods=['POST'])
 def endpoint():
+    token = os.getenv("SECRET_TOKEN")
+    header_token = request.headers["X-Insight-Token"]
     current_app.logger.warn(request.headers) 
-    if os.getenv("SECRET_TOKEN") != request.headers['X-Insight-Token']:
+    if token != header_token:
+        current_app.logger.warn("token %s does not match header %s" % (token, header_token))
         abort(403)
     if request.is_json:
         json_data = request.get_json()
