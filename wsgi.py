@@ -40,7 +40,7 @@ def generate_cloudevent(data):
         "datacontenttype": "application/json",
         "data": json.dumps(data),
     }
-    return cloudevent
+    return json.dumps(cloudevent)
 
 
 def get_short_token(long_token):
